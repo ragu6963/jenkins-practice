@@ -1,30 +1,27 @@
 pipeline {
     agent any
     stages {
-        stage('Read Secret File') {
+        stage('Inject Environment Variables') {
             steps {
                 script {
-                    // withCredentials로 Secret File 경로 가져오기
-                    withCredentials([file(credentialsId: 'secret_file', variable: 'SECRET_FILE')]) {
-                        // Secret File 내용 읽기
-                        def secretContent = readFile(SECRET_FILE).trim()
-                        
-                        // 읽어온 내용 출력 (보안 상 실제로는 출력하지 않는 것이 좋음)
-                        echo "Secret Content: ${secretContent}"
-                        
-                        // 환경 변수로 저장하거나 사용할 수 있음
-                        env.SECRET_CONTENT = secretContent
+                    // Jenkins Credentials에서 파일 경로 가져오기
+                    withCredentials([file(credentialsId: 'secret_file', variable: 'ENV_FILE_PATH')]) {
+                        // EnvInject 플러그인으로 환경 변수 파일 주입
+                        injectEnvVars(propertiesFilePath: ENV_FILE_PATH)
                     }
                 }
             }
         }
-        stage('Use Secret Content') {
+        stage('Use Injected Variables') {
             steps {
                 script {
-                    // 환경 변수 사용
-                    echo "Using Secret Content: ${env.SECRET_CONTENT}"
+                    // 주입된 환경 변수 사용
+                    echo "NAME: ${env.NAME}"
+                    echo "PORT: ${env.PORT}"
                 }
             }
         }
     }
 }
+
+
