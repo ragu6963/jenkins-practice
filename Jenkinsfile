@@ -6,6 +6,7 @@ pipeline {
             steps {
                 script { 
                     echo "MultiBranch 10"
+                    echo "branch-1"
                     echo "branch-2"
 
                 }
