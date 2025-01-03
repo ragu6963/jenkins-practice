@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // 주입된 환경 변수 사용
-                    echo "MultiBranch 5"
+                    echo "MultiBranch 6"
                 }
             }
         }
