@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
     stages {
@@ -6,8 +7,18 @@ pipeline {
                 script {
                     // Jenkins Credentials에서 파일 경로 가져오기
                     withCredentials([file(credentialsId: 'secret_file', variable: 'ENV_FILE_PATH')]) {
-                        // EnvInject 플러그인으로 환경 변수 파일 주입
-                        injectEnvVars(propertiesFilePath: ENV_FILE_PATH)
+                        // EnvInject를 사용해 파일 주입
+                        writeFile file: 'env.properties', text: readFile(ENV_FILE_PATH)
+
+                        // EnvInject로 환경 변수 설정
+                        properties([
+                            pipelineTriggers([]),
+                            [$class: 'EnvInjectJobProperty',
+                                info: [
+                                    propertiesFilePath: 'env.properties'
+                                ]
+                            ]
+                        ])
                     }
                 }
             }
@@ -23,5 +34,3 @@ pipeline {
         }
     }
 }
-
-
