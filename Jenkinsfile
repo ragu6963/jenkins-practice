@@ -7,6 +7,8 @@ pipeline {
                 script { 
                     echo "MultiBranch 10"
                     echo "branch-3"
+                    echo "branch-1"
+                    echo "branch-2"
 
                 }
             }
