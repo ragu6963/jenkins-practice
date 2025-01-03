@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     // 주입된 환경 변수 사용
-                    echo "Webhook "
+                    echo "Webhook 2"
                 }
             }
         }
