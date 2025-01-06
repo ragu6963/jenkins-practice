@@ -1,0 +1,56 @@
+services:
+  db:
+    container_name: db-container
+    image: mysql:8.0
+    volumes:
+      - db-volume:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - db-connect
+    # 컨테이너 작동 상태(healthcheck)를 확인한다.
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  backend:
+    container_name: backend-container
+    build:
+      context: ./backend
+    image: username/backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: db
+    networks:
+      - db-connect
+      - backend-connect
+    depends_on:
+      # db 컨테이너가 정상 작동(service_healthy) 상태가 될 때 까지 컨테이너 실행을 대기한다.
+      db:
+        condition: service_healthy
+
+  frontend:
+    container_name: frontend-container
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    image: username/frontend
+    ports:
+      - "80:80"
+    networks:
+      - backend-connect
+    depends_on:
+      - backend
+      - db
+
+volumes:
+  db-volume:
+
+networks:
+  db-connect:
+  backend-connect:
