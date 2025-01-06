@@ -32,7 +32,6 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     // 환경변수
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
-    implementation 'org.springframework:spring-context:5.3.12'
     runtimeOnly 'com.mysql:mysql-connector-j'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
