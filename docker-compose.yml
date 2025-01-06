@@ -20,7 +20,7 @@ services:
     container_name: backend-container
     build:
       context: ./backend
-    image: username/backend
+    image: backend:latest
     env_file:
       - .env
     environment:
@@ -39,7 +39,7 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: ${VITE_API_URL}
-    image: username/frontend
+    image: frontend:latest
     ports:
       - "80:80"
     networks:
