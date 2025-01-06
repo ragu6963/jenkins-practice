@@ -9,8 +9,8 @@ pipeline {
                     withCredentials([file(credentialsId: 'secret-file', variable: 'ENV_FILE')]) {
                         // Secret File을 작업 디렉토리에 복사
                         sh 'cp $ENV_FILE .env'
+                        sh 'chmod 644 .env'
                     }
-                    echo '.env file has been created from credentials.'
                 }
             }
         }
@@ -18,7 +18,6 @@ pipeline {
         stage('Run Docker Compose') {
             steps {
                 script {
-                    // docker-compose 실행
                     sh 'docker-compose up -d'
                 }
             }
