@@ -25,6 +25,8 @@ services:
       - .env
     environment:
       DATABASE_HOST: db
+    ports:
+      - "8081:8080"
     networks:
       - db-connect
       - backend-connect
