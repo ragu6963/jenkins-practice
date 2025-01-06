@@ -20,6 +20,7 @@ services:
     container_name: backend-container
     build:
       context: ./backend
+      dockerfile: dockerfile
     image: username/backend
     env_file:
       - .env
@@ -37,6 +38,7 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
+      dockerfile: dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: username/frontend
