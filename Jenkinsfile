@@ -29,11 +29,5 @@ pipeline {
         always {
             echo 'Pipeline execution completed.'
         }
-        cleanup {
-            // 리소스 정리
-            script {
-                sh 'docker-compose down'
-            }
-        }
     }
 }
