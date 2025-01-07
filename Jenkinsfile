@@ -14,17 +14,27 @@ pipeline {
 
                         // docker-compose가 .env 파일을 읽을 수 있게 권한 추가
                         sh 'chmod 644 .env'
+                        
+                        
                     }
                 }
             }
         }
-
-        stage('Run Docker Compose') {
-            steps {
-                script {
-                    sh 'DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose up -d --build'
-                }
+        stage('Read Environment Variables') {
+          steps {
+            script {
+              sh '. .env'
+              echo '$VITE_API_URL'
             }
+          }
         }
+
+        // stage('Run Docker Compose') {
+        //     steps {
+        //         script {
+        //             sh 'DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose up -d --build'
+        //         }
+        //     }
+        // }
     }
 }
