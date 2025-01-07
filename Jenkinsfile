@@ -23,7 +23,7 @@ pipeline {
         stage('Read Environment Variables') {
           steps {
             script {
-              sh '. .env'
+              sh 'export $(grep -v '^#' .env | xargs)'
               echo '$VITE_API_URL'
             }
           }
