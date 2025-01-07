@@ -23,8 +23,8 @@ pipeline {
         stage('Read Environment Variables') {
           steps {
             script {
-              sh 'ls -al'
-              // echo '$VITE_API_URL'
+              bash '. .env'
+              echo '$VITE_API_URL'
             }
           }
         }
