@@ -23,8 +23,9 @@ pipeline {
         stage('Read Environment Variables') {
           steps {
             script {
-              sh 'export $(grep -v '^#' .env | xargs)'
-              echo '$VITE_API_URL'
+                def envContent = readFile('.env')
+                echo "Generated .env file content:"
+                echo envContent
             }
           }
         }
