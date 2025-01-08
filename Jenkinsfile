@@ -2,18 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage("Alarm Discord") {
-      steps {
-        script {
-          withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
-            discordSend description: '젠킨스 빌드 결과',
-              webhookURL: '$Discord'
-            title: 'Jenkins Build Start',
-              link: env.BUILD_URL,
-          }
-        }
-      }
-    }
     stage('Load Environment Variables') {
       steps {
         script {
@@ -43,21 +31,45 @@ pipeline {
   }
   post {
     success {
-      withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
-        discordSend description: '젠킨스 빌드 결과',
-          webhookURL: '$Discord'
-        title: 'Jenkins Build Result',
-          link: env.BUILD_URL,
-          result: currentBuild.currentResult,
+      withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+        discordSend description: ""
+        "
+        제목: $ {
+          currentBuild.displayName
+        }
+        결과: $ {
+          currentBuild.result
+        }
+        실행 시간: $ {
+          currentBuild.duration / 1000
+        }
+        s
+          ""
+        ",
+        link: env.BUILD_URL, result: currentBuild.currentResult,
+          title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공",
+          webhookURL: "$DISCORD"
       }
     }
     failure {
-      withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
-        discordSend description: '젠킨스 빌드 결과',
-          webhookURL: '$Discord'
-        title: 'Jenkins Build Result',
-          link: env.BUILD_URL,
-          result: currentBuild.currentResult,
+      withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+        discordSend description: ""
+        "
+        제목: $ {
+          currentBuild.displayName
+        }
+        결과: $ {
+          currentBuild.result
+        }
+        실행 시간: $ {
+          currentBuild.duration / 1000
+        }
+        s
+          ""
+        ",
+        link: env.BUILD_URL, result: currentBuild.currentResult,
+          title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패",
+          webhookURL: "$DISCORD"
       }
     }
   }
