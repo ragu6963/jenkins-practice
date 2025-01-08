@@ -3,13 +3,13 @@ pipeline {
 
   stages {
     stage("Alarm Discord") {
-      script {
-        steps {
+      steps {
+        script {
           withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
-          discordSend description: '젠킨스 빌드 결과',
-            webhookURL: '$Discord'
+            discordSend description: '젠킨스 빌드 결과',
+              webhookURL: '$Discord'
             title: 'Jenkins Build Start',
-            link: env.BUILD_URL,
+              link: env.BUILD_URL,
           }
         }
       }
@@ -45,19 +45,19 @@ pipeline {
     success {
       withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
         discordSend description: '젠킨스 빌드 결과',
-        webhookURL: '$Discord'
+          webhookURL: '$Discord'
         title: 'Jenkins Build Result',
-        link: env.BUILD_URL,
-        result: currentBuild.currentResult,
+          link: env.BUILD_URL,
+          result: currentBuild.currentResult,
       }
     }
     failure {
       withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
         discordSend description: '젠킨스 빌드 결과',
-        webhookURL: '$Discord'
+          webhookURL: '$Discord'
         title: 'Jenkins Build Result',
-        link: env.BUILD_URL,
-        result: currentBuild.currentResult,
+          link: env.BUILD_URL,
+          result: currentBuild.currentResult,
       }
     }
   }
