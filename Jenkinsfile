@@ -5,13 +5,13 @@ pipeline {
     stage('Build Start') {
       steps {
         script {
-          withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+          withCredentials([string(credentialsId: 'discord-webhook', variable: 'discord_webhook')]) {
                 discordSend description: """
                 Jenkins Build Start
                 """,
                 link: env.BUILD_URL, 
                 title: "${env.JOB_NAME} : ${currentBuild.displayName} 시작", 
-                webhookURL: "$DISCORD"
+                webhookURL: "$discord_webhook"
             }
         }
       }
@@ -45,7 +45,7 @@ pipeline {
   }
   post {
         success {
-            withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+            withCredentials([string(credentialsId: 'discord-webhook', variable: 'discord_webhook')]) {
                         discordSend description: """
                         제목 : ${currentBuild.displayName}
                         결과 : ${currentBuild.result}
@@ -53,11 +53,11 @@ pipeline {
                         """,
                         link: env.BUILD_URL, result: currentBuild.currentResult, 
                         title: "${env.JOB_NAME} : ${currentBuild.displayName} 성공", 
-                        webhookURL: "$DISCORD"
+                        webhookURL: "$discord_webhook"
             }
         }
         failure {
-            withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+            withCredentials([string(credentialsId: 'discord-webhook', variable: 'discord_webhook')]) {
                         discordSend description: """
                         제목 : ${currentBuild.displayName}
                         결과 : ${currentBuild.result}
@@ -65,7 +65,7 @@ pipeline {
                         """,
                         link: env.BUILD_URL, result: currentBuild.currentResult, 
                         title: "${env.JOB_NAME} : ${currentBuild.displayName} 실패", 
-                        webhookURL: "$DISCORD"
+                        webhookURL: "$discord_webhook"
             }
         }
     }
