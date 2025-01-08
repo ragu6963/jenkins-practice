@@ -2,6 +2,20 @@ pipeline {
   agent any
 
   stages { 
+    stage('Build Start') {
+      steps {
+        script {
+          withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
+                discordSend description: """
+                Jenkins Build Start
+                """,
+                link: env.BUILD_URL, 
+                title: "${env.JOB_NAME} : ${currentBuild.displayName} 시작", 
+                webhookURL: "$DISCORD"
+            }
+        }
+      }
+    }
     stage('Load Environment Variables') {
       steps {
         script {
@@ -29,7 +43,7 @@ pipeline {
       }
     }
   }
- post {
+  post {
         success {
             withCredentials([string(credentialsId: 'discord-webhook', variable: 'DISCORD')]) {
                         discordSend description: """
