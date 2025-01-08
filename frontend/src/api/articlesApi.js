@@ -9,6 +9,10 @@ const articlesApi = {
     const resposne = await api.post(`articles`, data);
     return resposne.data;
   },
+  getArticle: async (id) => {
+    const response = await api.get(`articles/${id}`);
+    return response.data;
+  },
 };
 
 export default articlesApi;

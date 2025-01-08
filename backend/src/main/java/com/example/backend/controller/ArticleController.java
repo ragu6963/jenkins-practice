@@ -9,20 +9,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/articles")
 @RequiredArgsConstructor
 public class ArticleController {
 	private final ArticleService articleService;
 
 
-	@GetMapping("articles")
+	@GetMapping
 	public List<ArticleResponseDto> getArticles() {
 		return articleService.getArticles();
 	}
 
-	@PostMapping("articles")
+	@PostMapping
 	public ArticleResponseDto createArticle(@RequestBody ArticleRequestDto requestDto) {
 		return articleService.createArticle(requestDto);
+	}
+
+  @GetMapping("/{id}")
+	public ArticleResponseDto getArticleById(@PathVariable Long id) {
+		return articleService.getArticleById(id);
 	}
 
 }

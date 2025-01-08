@@ -39,6 +39,15 @@ public class ArticleService {
 				.collect(Collectors.toList());
 	}
 
+  @Transactional
+	public ArticleResponseDto getArticleById(Long id)  {
+		Article article = articleRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Article not found with id: " + id));
+
+
+		return toResponseDto(article);
+	}
+
 
 	private ArticleResponseDto toResponseDto(Article article) {
 

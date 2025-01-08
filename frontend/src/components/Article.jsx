@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Article.module.css";
 import { useNavigate } from "react-router-dom";
 
-export default function Article({ article, isDetail }) {
+export default function Article({ article, isDetail = false }) {
   const Navigate = useNavigate();
 
   return (
@@ -15,7 +15,7 @@ export default function Article({ article, isDetail }) {
       >
         {article.title}
       </h2>
-      <p className={styles.articleContent}>{article.content}</p>
+      {isDetail && <p className={styles.articleContent}>{article.content}</p>}
     </div>
   );
 }
