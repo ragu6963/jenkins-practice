@@ -25,6 +25,16 @@ pipeline {
                 script {
                     sh 'DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose up -d --build'
                 }
+                
+            }
+
+            post {
+              withCredentials([string(credentialsId: 'discord-webhook', variable: 'Discord')]) {
+                webhookURL: "$Discord"
+                title: "Jenkins Build Result", 
+                discordSend description: "젠킨스 빌드 결과", 
+                link: env.BUILD_URL, result: currentBuild.currentResult,  // 빌드 URL 과 빌드 결과
+            }
             }
         }
     }
