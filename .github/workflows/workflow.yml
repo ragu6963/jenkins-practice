@@ -41,7 +41,14 @@ jobs:
           docker compose push
 
       - name: Checkout GitHub Repository to Remote Server
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "[ -d '~/work-directory/.git' ] && (cd ~/work-directory && git pull origin main) || git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory"
+        run: |
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 
+          if [ -d '~/work-directory/.git' ]; then
+            cd ~/work-directory 
+            git pull --depth=1 origin main
+          else
+            git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
+          fi
 
       - name: Copy Env File
         run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
