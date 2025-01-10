@@ -33,7 +33,6 @@ jobs:
           echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
-          scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
 
       - name: Docker Image Build & Push
         run: |
@@ -42,6 +41,9 @@ jobs:
 
       - name: Checkout GitHub Repository to Remote Server
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "git clone -b main https://github.com/ragu6963/jenkins-practice ~/work-directory || (cd ~/work-directory && git pull origin main)"
+
+      - name: Copy Env File
+        run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
 
       - name: Docker Image Pull
         run: |
