@@ -16,6 +16,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add Host Key to Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: DockerHub Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
@@ -34,9 +37,6 @@ jobs:
         run: |
           docker compose build
           docker compose push
-
-      - name: Add Host Key to Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Run remote command test
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "touch 'hello-world.txt'"
