@@ -38,14 +38,10 @@ jobs:
           docker compose build
           docker compose push
 
-      - name: Run remote command test
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "touch 'hello-world.txt'"
-
       - name: Checkout GitHub Repository to Remote Server
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "git clone -b main https://github.com/ragu6963/jenkins-practice ~/work-directory || (cd ~/work-directory && git pull origin main)"
 
       - name: Docker Image Pull
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
-          cd ~/work-directory 
-          docker-compose pull
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory"
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker-compose pull"
