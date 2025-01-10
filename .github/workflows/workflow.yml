@@ -43,4 +43,4 @@ jobs:
 
       - name: Docker Image Pull
         run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker-compose pull -f work-directory/docker-compose.yml "
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker-compose pull "
