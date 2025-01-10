@@ -5,7 +5,7 @@ on:
     branches:
       - main
 jobs:
-  ssh-agent:
+  docker-build-push:
     runs-on: ubuntu-24.04
 
     steps:
@@ -46,5 +46,5 @@ jobs:
       - name: Docker Image Pull
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
           cd ~/work-directory &&
-          docker compose pull
+          'docker compose pull'
           "
