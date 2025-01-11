@@ -65,7 +65,7 @@ jobs:
       - name: Checkout GitHub Repository to Remote Server
         run: |
           ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
-            if [ -d "~/work-directory/.git" ]; then
+            if [ -d "~/work-directory/" ]; then
               cd ~/work-directory 
               git pull --depth=1 origin main
             else
