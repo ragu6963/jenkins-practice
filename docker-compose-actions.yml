@@ -19,10 +19,6 @@ services:
     container_name: backend-container
     build:
       context: ./backend
-      cache_from:
-        - type=gha # local에서 gha로 변경
-      cache_to:
-        - type=gha,mode=max # local에서 gha로 변경
     image: nodecrewbeemo/backend:latest
     env_file:
       - .env
@@ -41,10 +37,6 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
-      cache_from:
-        - type=gha # local에서 gha로 변경
-      cache_to:
-        - type=gha,mode=max # local에서 gha로 변경
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest

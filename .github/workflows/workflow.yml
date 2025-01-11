@@ -25,14 +25,12 @@ jobs:
 
       # GitHub Actions 캐시 설정 추가
       - name: Cache Docker layers
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-buildx
+        uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile*') }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-docker-
 
       # SSH 에이전트 설정 - 원격 서버 접속을 위한 SSH 키 설정
       - name: SSH Agent
@@ -66,13 +64,15 @@ jobs:
       #     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
 
       - name: Build and cache Docker images
-        env:
-          DOCKER_BUILDKIT: 1
-          COMPOSE_DOCKER_CLI_BUILD: 1
         run: |
-          docker compose -f docker-compose-actions.yml build \
+          docker compose \
+            -f docker-compose-actions.yml \
+            build \
+            --pull \
             --progress=plain \
-            --build-arg BUILDKIT_INLINE_CACHE=1
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new
 
       # Docker 이미지 푸시
       - name: Docker Image Push
