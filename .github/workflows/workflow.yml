@@ -65,8 +65,13 @@ jobs:
       - name: Checkout GitHub Repository to Remote Server
         run: |
           ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
-            rm -rf ~/work-directory
-            git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
+            if [ -d "~/work-directory/.git" ]; then
+              cd ~/work-directory
+              git pull origin main
+            else
+              rm -rf ~/work-directory
+              git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
+            fi
           '
 
       # 환경 변수 파일을 원격 서버로 복사
