@@ -19,15 +19,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Docker 이미지 캐시 저장 설정
-      # - name: Cache Docker layers
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: /tmp/.buildx-cache
-      #     key: ${{ runner.os }}-buildx-${{ github.sha }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-buildx-
-
       - name: Restore Docker cache
         uses: actions/cache@v4
         with:
@@ -67,7 +58,7 @@ jobs:
       #     docker buildx create --use
       #     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
 
-      - name: Build and cache Docker images with Compose
+      - name: Build and cache Docker images
         env:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
@@ -118,16 +109,3 @@ jobs:
       # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
       - name: Docker Clean
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker image prune -f"
-
-      # - name: Move cache
-      #   run: |
-      #     rm -rf /tmp/.buildx-cache
-      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Save Docker cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
