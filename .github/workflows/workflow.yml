@@ -22,10 +22,10 @@ jobs:
 
       # GitHub Actions 캐시 설정 추가
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4.2.0
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile*') }}
+          key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-docker-
 
@@ -54,24 +54,14 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
-      # Docker 이미지 빌드
-      # - name: Docker Image Build
-      #   run: |
-      #     docker buildx create --use
-      #     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
-
       # Docker Buildx 설정 - 캐시 사용을 위해 필요
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Build and cache Docker images
+      # Docker 이미지 빌드
+      - name: Docker Image Build
         run: |
-          docker buildx bake \
-            -f docker-compose-actions.yml \
-            build \
-            --progress=plain \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new
+          docker buildx create --use
+          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
 
       # Docker 이미지 푸시
       - name: Docker Image Push
