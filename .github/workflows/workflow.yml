@@ -58,8 +58,6 @@ jobs:
         run: |
           docker buildx create --use
           COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       # Docker 이미지 푸시
       - name: Docker Image Push
