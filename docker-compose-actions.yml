@@ -20,9 +20,9 @@ services:
     build:
       context: ./backend
       cache_from:
-        - type=gha
+        - type=local,src=/tmp/.buildx-cache
       cache_to:
-        - type=gha,mode=max
+        - type=local,dest=/tmp/.buildx-cache-new,mode=max
     image: nodecrewbeemo/backend:latest
     env_file:
       - .env
@@ -42,9 +42,9 @@ services:
     build:
       context: ./frontend
       cache_from:
-        - type=gha
+        - type=local,src=/tmp/.buildx-cache
       cache_to:
-        - type=gha,mode=max
+        - type=local,dest=/tmp/.buildx-cache-new,mode=max
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest
