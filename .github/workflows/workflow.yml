@@ -101,3 +101,8 @@ jobs:
       # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
       - name: Docker Clean
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker image prune -f"
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
