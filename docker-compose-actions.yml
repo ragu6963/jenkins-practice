@@ -20,11 +20,11 @@ services:
     container_name: backend-container
     build:
       context: ./backend
-      # Github Actions Cache 활용 설정
+      # Buildx 캐시 설정 수정
       cache_from:
-        - type=local,src=/tmp/.buildx-cache
+        - type=gha
       cache_to:
-        - type=local,dest=/tmp/.buildx-cache-new,mode=max
+        - type=gha,mode=max
     image: nodecrewbeemo/backend:latest
     env_file:
       - .env
@@ -43,11 +43,11 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
-      # Github Actions Cache 활용 설정
+      # Buildx 캐시 설정 수정
       cache_from:
-        - type=local,src=/tmp/.buildx-cache
+        - type=gha
       cache_to:
-        - type=local,dest=/tmp/.buildx-cache-new,mode=max
+        - type=gha,mode=max
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest
