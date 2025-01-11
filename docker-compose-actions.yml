@@ -24,6 +24,18 @@ services:
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
     image: nodecrewbeemo/backend:latest
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: db
+    ports:
+      - "8081:8080"
+    networks:
+      - db-connect
+      - backend-connect
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     container_name: frontend-container
@@ -35,3 +47,18 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest
+    ports:
+        - "80:80"
+      networks:
+        - backend-connect
+      depends_on:
+        - backend
+        - db
+
+
+volumes:
+  db-volume:
+
+networks:
+  db-connect:
+  backend-connect:
