@@ -49,13 +49,12 @@ services:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest
     ports:
-        - "80:80"
-      networks:
-        - backend-connect
-      depends_on:
-        - backend
-        - db
-
+      - "80:80"
+    networks:
+      - backend-connect
+    depends_on:
+      - backend
+      - db
 
 volumes:
   db-volume:
