@@ -57,7 +57,7 @@ jobs:
       - name: Docker Image Build
         run: |
           docker buildx create --use
-          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build \
+          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
 
       # Docker 이미지 푸시
       - name: Docker Image Push
