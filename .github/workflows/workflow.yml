@@ -53,17 +53,17 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
-      # Docker 이미지 빌드 및 레지스트리에 푸시
-      - name: Docker Image Build & Push
+      # Docker 이미지 빌드
+      - name: Docker Image Build
         run: |
-          # buildx를 사용하여 이미지 빌드
           docker buildx create --use
           COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build \
             --build-arg BUILDKIT_INLINE_CACHE=1
-          docker compose -f docker-compose-actions.yml push
 
-          # 캐시 업데이트
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
+      # Docker 이미지 푸시
+      - name: Docker Image Push
+        run: |
+          docker compose -f docker-compose-actions.yml push
 
       - name: Checkout work-directory
         run: |
@@ -91,9 +91,13 @@ jobs:
       - name: Copy Env File
         run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
 
-      # 원격 서버에서 최신 Docker 이미지를 풀하고 컨테이너 실행
-      - name: Docker Image Pull
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml pull && docker compose -f docker-compose-actions.yml up -d"
+      # 원격 서버에서 최신 Docker 이미지 pull
+      - name: Pull Docker Images
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml pull"
+
+      # Docker 컨테이너 실행
+      - name: Start Docker Containers
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml up -d"
 
       # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
       - name: Docker Clean
