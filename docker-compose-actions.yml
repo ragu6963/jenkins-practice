@@ -19,10 +19,6 @@ services:
     container_name: backend-container
     build:
       context: ./backend
-      # BuildKit 캐시 설정
-      x-bake:
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
     image: nodecrewbeemo/backend:latest
     env_file:
       - .env
@@ -41,9 +37,6 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
-      x-bake:
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
       args:
         VITE_API_URL: ${VITE_API_URL}
     image: nodecrewbeemo/frontend:latest
