@@ -74,7 +74,7 @@ jobs:
 
       # 환경 변수 파일을 원격 서버로 복사
       - name: Copy Env File
-        run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
+        run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/work-directory/.env
 
       # 원격 서버에서 최신 Docker 이미지를 풀하고 컨테이너 실행
       - name: Docker Image Pull
