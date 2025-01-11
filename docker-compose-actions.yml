@@ -1,0 +1,30 @@
+services:
+  # ... db service ...
+
+  backend:
+    container_name: backend-container
+    build:
+      context: ./backend
+      cache_from:
+        - nodecrewbeemo/backend:latest
+      # BuildKit 캐시 설정
+      x-bake:
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+    image: nodecrewbeemo/backend:latest
+    # ... 나머지 설정 ...
+
+  frontend:
+    container_name: frontend-container
+    build:
+      context: ./frontend
+      cache_from:
+        - nodecrewbeemo/frontend:latest
+      # BuildKit 캐시 설정
+      x-bake:
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    image: nodecrewbeemo/frontend:latest
+    # ... 나머지 설정 ...
