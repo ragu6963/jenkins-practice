@@ -69,9 +69,7 @@ jobs:
           docker buildx bake \
             -f docker-compose-actions.yml \
             build \
-            --pull \
             --progress=plain \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache-new
 
