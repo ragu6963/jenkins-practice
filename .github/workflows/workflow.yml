@@ -58,16 +58,21 @@ jobs:
         run: |
           # buildx를 사용하여 이미지 빌드
           docker buildx create --use
-          docker compose build
+          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max
           docker compose push
 
       - name: Checkout work-directory
         run: |
-          if [ -d "$HOME/work-directory" ]; then
-            echo "work-directory exists"
-          else
-            echo "work-directory does not exist"
-          fi
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
+            if [ -d "$HOME/work-directory" ]; then
+              echo "work-directory exists"
+            else
+              echo "work-directory does not exist"
+            fi
+          '
 
       # 원격 서버에 GitHub 저장소 복제 또는 업데이트
       - name: Checkout GitHub Repository to Remote Server
