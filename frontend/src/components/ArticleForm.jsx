@@ -1,6 +1,5 @@
-import React from "react";
 import styles from "./ArticleForm.module.css";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import articlesApi from "../api/articlesApi";
 
 const INITIAL_FORM_DATA = {
