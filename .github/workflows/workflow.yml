@@ -72,7 +72,7 @@ jobs:
           DOCKER_BUILDKIT: 1
           COMPOSE_DOCKER_CLI_BUILD: 1
         run: |
-          docker-compose build \
+          docker compose -f docker-compose-actions.yml build \
             --progress=plain \
             --build-arg BUILDKIT_INLINE_CACHE=1
 
