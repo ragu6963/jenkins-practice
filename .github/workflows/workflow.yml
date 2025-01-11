@@ -66,7 +66,7 @@ jobs:
 
       - name: Build and cache Docker images
         run: |
-          docker compose \
+          docker buildx bake \
             -f docker-compose-actions.yml \
             build \
             --pull \
