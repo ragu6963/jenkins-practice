@@ -50,7 +50,15 @@ pipeline {
           // BuildKit을 사용하여 새로운 Docker 이미지 빌드 및 컨테이너 실행
           sh 'DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose up -d --build'
         }
+      }
+    }
 
+    stage('Clean Docker Image') {
+      steps {
+        script {
+          // 빌드 후 사용하지 않는 Docker 이미지 삭제
+          sh 'docker image prune -f'
+        }
       }
     }
   }
