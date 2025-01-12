@@ -17,7 +17,6 @@ export default function ArticlePage() {
 
   return (
     <div>
-      <h1>Article</h1>
       <Article key={article.id} article={article} isDetail={true}></Article>
     </div>
   );
