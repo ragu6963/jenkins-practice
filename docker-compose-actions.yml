@@ -17,6 +17,7 @@ services:
       start_period: 30s
 
   backend:
+    platform: linux/arm64
     container_name: backend-container
     build:
       context: ./backend
@@ -38,11 +39,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    platform:
-      - "linux/amd64"
-      - "linux/arm64"
 
   frontend:
+    platform: linux/arm64
     container_name: frontend-container
     build:
       context: ./frontend
@@ -60,10 +59,6 @@ services:
       - backend-connect
     depends_on:
       - backend
-      - db
-    platform:
-      - "linux/amd64"
-      - "linux/arm64"
 
 volumes:
   db-volume:
