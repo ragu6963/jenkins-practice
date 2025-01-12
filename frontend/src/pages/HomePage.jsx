@@ -17,6 +17,7 @@ export default function HomePage() {
 
   return (
     <div>
+      <h1>Home</h1>
       <ArticleForm fetchArticles={fetchArticles}></ArticleForm>
       {articles.map((article) => {
         return (
