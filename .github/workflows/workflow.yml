@@ -20,7 +20,7 @@ jobs:
           docker version
           docker compose version
 
-      # GitHub Actions 캐시 설정 추가
+      # GitHub Actions 캐시 설정
       - name: Cache Docker layers
         uses: actions/cache@v4.2.0
         with:
@@ -28,6 +28,16 @@ jobs:
           key: ${{ runner.os }}-docker-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-docker-
+
+      # GitHub Actions 캐시 파일 확인
+      - name: List cache contents
+        run: |
+          echo "Cache directory contents:"
+          ls -la /tmp/.buildx-cache
+          echo "\nDetailed cache contents:"
+          find /tmp/.buildx-cache -type f -exec ls -lh {} \;
+          echo "\nTotal cache size:"
+          du -sh /tmp/.buildx-cache
 
       # SSH 에이전트 설정 - 원격 서버 접속을 위한 SSH 키 설정
       - name: SSH Agent
@@ -38,10 +48,6 @@ jobs:
       # 원격 서버의 호스트 키를 known_hosts에 추가하여 SSH 연결 신뢰 설정
       - name: Add Host Key to Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      # DockerHub 로그인 - 이미지 푸시를 위한 인증
-      - name: DockerHub Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       # 환경 변수 파일 생성
       - name: Create .env file
@@ -54,15 +60,32 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
-      # Docker Buildx 설정 - 캐시 사용을 위해 필요
+      # DockerHub 로그인 - 이미지 푸시를 위한 인증
+      - name: DockerHub Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Docker Buildx 설정
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          # 캐시 저장소로 GitHub Actions 캐시 사용
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
 
       # Docker 이미지 빌드
       - name: Docker Image Build
         run: |
+          # Buildx 빌더 생성
           docker buildx create --use --driver=docker-container
-          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build
+
+          # BuildKit 활성화하여 빌드
+          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build \
+            --build-arg BUILDKIT_INLINE_CACHE=1
+
+          # 캐시 최적화
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
 
       # Docker 이미지 푸시
       - name: Docker Image Push
