@@ -75,7 +75,6 @@ jobs:
         run: |
           docker compose -f docker-compose-actions.yml push
 
-      # docker compose -f docker-compose-actions.yml down
       # 원격 서버에 GitHub 저장소 복제 또는 업데이트
       - name: Checkout GitHub Repository to Remote Server
         run: |
