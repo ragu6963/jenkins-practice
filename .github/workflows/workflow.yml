@@ -29,16 +29,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
 
-      # GitHub Actions 캐시 파일 확인
-      - name: List cache contents
-        run: |
-          echo "Cache directory contents:"
-          ls -la /tmp/.buildx-cache
-          echo "\nDetailed cache contents:"
-          find /tmp/.buildx-cache -type f -exec ls -lh {} \;
-          echo "\nTotal cache size:"
-          du -sh /tmp/.buildx-cache
-
       # SSH 에이전트 설정 - 원격 서버 접속을 위한 SSH 키 설정
       - name: SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -88,23 +78,13 @@ jobs:
         run: |
           docker compose -f docker-compose-actions.yml push
 
-      - name: Checkout work-directory
-        run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
-            if [ -d "$HOME/work-directory" ]; then
-              echo "work-directory exists"
-            else
-              echo "work-directory does not exist"
-            fi
-          '
-
       # 원격 서버에 GitHub 저장소 복제 또는 업데이트
       - name: Checkout GitHub Repository to Remote Server
         run: |
           ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
             if [ -d "$HOME/work-directory" ]; then
               cd $HOME/work-directory
-              git pull origin main
+              git pull --depth=1 origin main
             else
               git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
             fi
@@ -125,12 +105,3 @@ jobs:
       # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
       - name: Docker Clean
         run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker image prune -f"
-
-      - name: List cache contents
-        run: |
-          echo "Cache directory contents:"
-          ls -la /tmp/.buildx-cache
-          echo "\nDetailed cache contents:"
-          find /tmp/.buildx-cache -type f -exec ls -lh {} \;
-          echo "\nTotal cache size:"
-          du -sh /tmp/.buildx-cache
