@@ -67,25 +67,21 @@ jobs:
       # Docker Buildx 설정
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          # 캐시 저장소로 GitHub Actions 캐시 사용
-          driver-opts: |
-            image=moby/buildkit:latest
-            network=host
 
       # Docker 이미지 빌드
       - name: Docker Image Build
         run: |
-          # Buildx 빌더 생성
-          docker buildx create --use --driver=docker-container
+          # BuildKit 캐시 설정
+          docker buildx create --use
 
-          # BuildKit 활성화하여 빌드
-          COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose-actions.yml build \
+          # 캐시 디렉토리 생성
+          mkdir -p /tmp/.buildx-cache
+
+          # BuildKit으로 빌드
+          DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
+          docker compose -f docker-compose-actions.yml build \
+            --progress=plain \
             --build-arg BUILDKIT_INLINE_CACHE=1
-
-          # 캐시 최적화
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
 
       # Docker 이미지 푸시
       - name: Docker Image Push
