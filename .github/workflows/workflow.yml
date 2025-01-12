@@ -20,7 +20,7 @@ jobs:
           docker version
           docker compose version
 
-      # GitHub Actions 캐시 설정
+      # GitHub Actions Cache 설정
       - name: Cache Docker layers
         uses: actions/cache@v4.2.0
         with:
@@ -82,8 +82,7 @@ jobs:
             if [ -d "$HOME/work-directory" ]; then
               cd $HOME/work-directory
               git config pull.rebase true
-              git fetch origin main
-              git reset --hard origin/main
+              git pull origin main
             else
               git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
             fi
