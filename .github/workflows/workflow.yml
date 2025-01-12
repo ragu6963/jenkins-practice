@@ -73,8 +73,8 @@ jobs:
 
           # BuildKit으로 빌드
           DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
-          docker compose -f docker-compose-actions.yml build \
-            --progress=plain \
+          docker compose --progress plain \
+          -f docker-compose-actions.yml build \
             --build-arg BUILDKIT_INLINE_CACHE=1
 
       # Docker 이미지 푸시
