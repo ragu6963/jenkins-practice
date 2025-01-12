@@ -68,9 +68,6 @@ jobs:
           # BuildKit 캐시 설정
           docker buildx create --use
 
-          # 캐시 디렉토리 생성
-          mkdir -p /tmp/.buildx-cache
-
           # BuildKit으로 빌드
           DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
           docker compose --progress plain \
@@ -98,14 +95,14 @@ jobs:
       - name: Copy Env File
         run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
 
-      # # 원격 서버에서 최신 Docker 이미지 pull
-      # - name: Pull Docker Images
-      #   run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml pull"
+      # 원격 서버에서 최신 Docker 이미지 pull
+      - name: Pull Docker Images
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml pull"
 
-      # # Docker 컨테이너 실행
-      # - name: Start Docker Containers
-      #   run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml up -d"
+      # Docker 컨테이너 실행
+      - name: Start Docker Containers
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ~/work-directory && docker compose -f docker-compose-actions.yml up -d"
 
-      # # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
-      # - name: Docker Clean
-      #   run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker image prune -f"
+      # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
+      - name: Docker Clean
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker image prune -f"
