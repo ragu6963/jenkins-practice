@@ -66,7 +66,7 @@ jobs:
       - name: Docker Image Build
         run: |
           # BuildKit 캐시 설정
-          docker buildx create --use --platform linux/amd64,linux/arm64
+          docker buildx create --use
 
           # 캐시 디렉토리 생성
           mkdir -p /tmp/.buildx-cache
