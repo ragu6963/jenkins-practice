@@ -15,11 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - name: Check Docker / Compose version
-        run: |
-          docker version
-          docker compose version
-
       # GitHub Actions Cache 설정
       - name: Cache Docker layers
         uses: actions/cache@v4.2.0
@@ -39,6 +34,14 @@ jobs:
       - name: Add Host Key to Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
+      # Docker Buildx 설정
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # DockerHub 로그인 - 이미지 푸시를 위한 인증
+      - name: DockerHub Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       # 환경 변수 파일 생성
       - name: Create .env file
         run: |
@@ -50,25 +53,13 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
-      # DockerHub 로그인 - 이미지 푸시를 위한 인증
-      - name: DockerHub Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      # Docker Buildx 설정
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       # Docker 이미지 빌드
       - name: Docker Image Build
         run: |
-          # BuildKit 캐시 설정
           docker buildx create --use
-
-          # BuildKit으로 빌드
           DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
-          docker compose --progress plain \
-          -f docker-compose-actions.yml build \
-            --build-arg BUILDKIT_INLINE_CACHE=1
+          docker compose -f docker-compose-actions.yml build \
+          --build-arg BUILDKIT_INLINE_CACHE=1
 
       # Docker 이미지 푸시
       - name: Docker Image Push
