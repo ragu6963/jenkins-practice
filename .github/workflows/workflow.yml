@@ -58,11 +58,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # QEMU 설정 (다중 아키텍처 지원)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       # Docker 이미지 빌드
       - name: Docker Image Build
         run: |
           # BuildKit 캐시 설정
-          docker buildx create --use
+          docker buildx create --use --platform linux/amd64,linux/arm64
 
           # 캐시 디렉토리 생성
           mkdir -p /tmp/.buildx-cache

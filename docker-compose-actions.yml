@@ -15,6 +15,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    platform: linux/amd64,linux/arm64
 
   backend:
     container_name: backend-container
@@ -38,6 +39,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    platform: linux/amd64,linux/arm64
 
   frontend:
     container_name: frontend-container
@@ -58,6 +60,7 @@ services:
     depends_on:
       - backend
       - db
+    platform: linux/amd64,linux/arm64
 
 volumes:
   db-volume:
