@@ -53,13 +53,24 @@ jobs:
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
-      # Docker 이미지 빌드
+      - name: Create BuildKit Builder
+        run: |
+          docker buildx create --use --name buildkit
+          docker buildx use buildkit
+
       - name: Docker Image Build
         run: |
-          docker buildx create --use
-          DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
-          docker compose -f docker-compose-actions.yml build \
+          docker compose -f docker-compose-actions.yml build  \ 
+          --builder buildkit \ 
           --build-arg BUILDKIT_INLINE_CACHE=1
+
+      # # Docker 이미지 빌드
+      # - name: Docker Image Build
+      #   run: |
+      #     docker buildx create --use
+      #     DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 \
+      #     docker compose -f docker-compose-actions.yml build \
+      #     --build-arg BUILDKIT_INLINE_CACHE=1
 
       # Docker 이미지 푸시
       - name: Docker Image Push
