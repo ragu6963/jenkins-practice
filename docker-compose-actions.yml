@@ -17,7 +17,6 @@ services:
       start_period: 30s
 
   backend:
-    platform: linux/arm64
     container_name: backend-container
     build:
       context: ./backend
@@ -41,7 +40,6 @@ services:
         condition: service_healthy
 
   frontend:
-    platform: linux/arm64
     container_name: frontend-container
     build:
       context: ./frontend
