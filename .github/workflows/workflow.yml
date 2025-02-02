@@ -29,10 +29,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver-opts: |
-            image=moby/buildkit:latest
-          buildkitd-flags: |
-            --debug
+          driver: docker-container # BuildKit 컨테이너 드라이버 사용
+          buildkitd-flags: --debug
 
       # DockerHub 로그인
       - name: DockerHub Login

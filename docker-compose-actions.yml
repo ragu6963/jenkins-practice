@@ -20,9 +20,8 @@ services:
     container_name: backend-container
     build:
       context: ./backend
-      # gha 타입으로 캐시 설정 변경
       cache_from:
-        - type=gha
+        - type=gha # GitHub Actions 캐시 사용
       cache_to:
         - type=gha,mode=max
     image: nodecrewbeemo/backend:latest
@@ -43,9 +42,8 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
-      # gha 타입으로 캐시 설정 변경
       cache_from:
-        - type=gha
+        - type=gha # GitHub Actions 캐시 사용
       cache_to:
         - type=gha,mode=max
       args:
