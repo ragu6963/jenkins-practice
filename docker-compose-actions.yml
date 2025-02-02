@@ -42,8 +42,9 @@ services:
     container_name: frontend-container
     build:
       context: ./frontend
+      # gha 타입으로 캐시 설정 변경
       cache_from:
-        - type=gha # GitHub Actions 캐시 사용
+        - type=gha
       cache_to:
         - type=gha,mode=max
       args:
