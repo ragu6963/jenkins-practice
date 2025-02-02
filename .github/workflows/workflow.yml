@@ -75,7 +75,8 @@ jobs:
           ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} '
             if [ -d "$HOME/work-directory" ]; then
               cd $HOME/work-directory
-              git pull --rebase --allow-unrelated-histories
+              git fetch origin main
+              git reset --hard origin/main
             else
               git clone --depth=1 -b main ${{ github.server_url }}/${{ github.repository }} ~/work-directory
             fi
@@ -85,13 +86,9 @@ jobs:
       - name: Copy Env File
         run: scp .env ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/work-directory/.env
 
-      # 원격 서버에서 최신 Docker 이미지 pull
+      # 원격 서버에서 최신 Docker 이미지 pull & 컨테이너 실행
       - name: Pull Docker Images
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd ~/work-directory && docker compose -f docker-compose-actions.yml pull'
-
-      # Docker 컨테이너 실행
-      - name: Start Docker Containers
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd ~/work-directory && docker compose -f docker-compose-actions.yml up -d'
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} 'cd ~/work-directory && docker compose -f docker compose up --pull always -d'
 
       # 사용하지 않는 Docker 이미지 정리하여 디스크 공간 확보
       - name: Docker Clean
