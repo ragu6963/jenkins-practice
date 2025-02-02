@@ -1,17 +1,27 @@
-# 빌드 단계
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM openjdk:21-jdk-slim AS build
+
+RUN apt-get update && apt-get install -y dos2unix
+
 WORKDIR /app
+
+COPY gradle gradle
 COPY build.gradle settings.gradle gradlew ./
-COPY gradle ./gradle
-RUN chmod +x gradlew
+
+RUN dos2unix gradlew && \
+    chmod +x gradlew
+
 RUN ./gradlew dependencies --no-daemon
-COPY . ./
-RUN chmod +x gradlew
+
+COPY src src
+
 RUN ./gradlew bootJar --no-daemon
 
-# 실행 단계
 FROM eclipse-temurin:21-jre-alpine
+
 WORKDIR /app
+
 COPY --from=build /app/build/libs/*.jar app.jar
-EXPOSE 8081
+
+EXPOSE 8080
+
 CMD ["java", "-jar", "app.jar"]
