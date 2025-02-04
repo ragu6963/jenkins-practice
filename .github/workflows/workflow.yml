@@ -32,6 +32,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
+      # 강제 실패 테스트
+      - name: Force Failure Test
+        run: |
+          echo "테스트를 위한 강제 실패"
+          exit 1  # 0이 아닌 값을 반환하면 step이 실패로 처리됨
+
       # GitHub Actions Cache 설정
       - name: Cache Docker layers
         uses: actions/cache@v4.2.0
@@ -62,7 +68,6 @@ jobs:
       # 환경 변수 파일 생성
       - name: Create .env file
         run: |
-          echo "DATABASE=${{ secrets.DATABASE }}" >> .env
           echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
