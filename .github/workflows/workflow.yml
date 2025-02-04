@@ -97,5 +97,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ~/work-directory
+            docker compose -f docker-compose-actions.yml down
             docker compose -f docker-compose-actions.yml up --pull always -d
             docker image prune -f
