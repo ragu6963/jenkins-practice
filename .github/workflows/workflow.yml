@@ -16,6 +16,18 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      # Discord 알림 - 배포 시작
+      - name: Discord Notification - Start
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "🚀 배포 시작"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+          color: 0x0000ff
+
       # 소스 코드를 워크스페이스로 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4.2.2
@@ -99,3 +111,29 @@ jobs:
             docker compose -f docker-compose-actions.yml down
             docker compose -f docker-compose-actions.yml up --pull always -d
             docker image prune -f
+
+      # Discord 알림 - 배포 성공
+      - name: Discord Notification - Success
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "✅ 배포 성공"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+          color: 0x00ff00
+
+      # Discord 알림 - 배포 실패
+      - name: Discord Notification - Failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "❌ 배포 실패"
+          description: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.event.head_commit.message }}
+          color: 0xff0000
