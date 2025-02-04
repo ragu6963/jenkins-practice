@@ -8,7 +8,6 @@ services:
       - .env
     networks:
       - db-connect
-    # 컨테이너 작동 상태(healthcheck)를 확인한다.
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -25,13 +24,10 @@ services:
       - .env
     environment:
       DATABASE_HOST: db
-    ports:
-      - "8081:8080"
     networks:
       - db-connect
       - backend-connect
     depends_on:
-      # db 컨테이너가 정상 작동(service_healthy) 상태가 될 때 까지 컨테이너 실행을 대기한다.
       db:
         condition: service_healthy
 

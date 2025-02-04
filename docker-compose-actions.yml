@@ -21,17 +21,15 @@ services:
     build:
       context: ./backend
       # BuildKit 캐시 설정
+      # 캐시 불러올 폴더
       cache_from:
         - type=local,src=/tmp/.buildx-cache/backend
+      # 캐시 저장할 폴더
       cache_to:
         - type=local,dest=/tmp/.buildx-cache/backend,mode=max
     image: nodecrewbeemo/backend:latest
     env_file:
       - .env
-    environment:
-      DATABASE_HOST: db
-    ports:
-      - "8081:8080"
     networks:
       - db-connect
       - backend-connect
