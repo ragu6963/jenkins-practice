@@ -62,6 +62,7 @@ jobs:
       # 환경 변수 파일 생성
       - name: Create .env file
         run: |
+          echo "DATABASE=${{ secrets.DATABASE }}" >> .env
           echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
