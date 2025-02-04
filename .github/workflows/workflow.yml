@@ -6,9 +6,8 @@ on:
       - main
     paths:
       - ".github/workflows/workflow.yml"
-      - "docker-compose*.yml"
+      - "docker-compose-actions.yml"
       - "Dockerfile"
-      - ".env.example"
       - "frontend/**"
       - "backend/**"
 
