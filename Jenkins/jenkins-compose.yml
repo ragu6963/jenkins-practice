@@ -6,7 +6,7 @@ services:
     environment:
       - TZ=Asia/Seoul
     ports:
-      - "8888:8080" # Jenkins 웹페이지 포트
+      - "8080:8080" # Jenkins 웹페이지 포트
     group_add:
       # 컨테이너 실행 시 컨테이너 내부 사용자에게 그룹을 추가
       # 해당 설정을 통해 컨테이너 내부 사용자가 docker 명령어를 사용할 수 있도록 함

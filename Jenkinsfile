@@ -24,11 +24,14 @@ pipeline {
     stage('Run Docker Compose') {
       steps {
         script {
+	        // Docker 이미지 빌드
+          sh 'docker compose build'
+          
           // 기존 Docker 컨테이너 중지
           sh 'docker compose down'
           
-          // BuildKit을 사용하여 새로운 Docker 이미지 빌드 및 컨테이너 실행
-          sh 'DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker compose up -d --build'
+          // Docker 컨테이너 실행
+          sh 'docker compose up -d'
         }
       }
     }
