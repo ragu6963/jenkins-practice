@@ -1,0 +1,20 @@
+services:
+  jenkins:
+    container_name: jenkins-container
+    image: nodecrewbeemo/jenkins:latest
+    restart: unless-stopped # 컨테이너 재시작 옵션
+    environment:
+      - TZ=Asia/Seoul
+    ports:
+      - "8888:8080" # Jenkins 웹페이지 포트
+    group_add:
+      # 컨테이너 실행 시 컨테이너 내부 사용자에게 그룹을 추가
+      # 해당 설정을 통해 컨테이너 내부 사용자가 docker 명령어를 사용할 수 있도록 함
+      - ${DOCKER_GROUP_ID} # 호스트의 docker 그룹 ID
+    volumes:
+      - jenkins_home_volume:/var/jenkins_home # Jenkins 데이터 영구 저장
+      - /var/run/docker.sock:/var/run/docker.sock # 호스트의 Docker 소켓 마운트, Jenkins에서 Docker 명령어를 사용하기 위해 필요
+
+volumes:
+  jenkins_home_volume: # Jenkins 데이터 저장 볼륨
+
